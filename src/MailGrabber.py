@@ -5,11 +5,16 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
-import time
+from time import sleep
+from selenium.webdriver.chrome.options import Options
+import undetected_chromedriver as uc
 
 
 class MailGrabber(webdriver.Chrome):
     def __init__(self, driver=webdriver.Chrome, teardown=False):
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-infobars")
         self.driver = driver
         self.teardown = teardown
         super(MailGrabber, self).__init__()
@@ -80,7 +85,7 @@ class MailGrabber(webdriver.Chrome):
                         password.click()
                         password.send_keys(z)
 
-                time.sleep(5)
+                sleep(10)
                 email.clear()
         print("Numbers logs = > ", arr)
         print("Testing all the numbers....")
