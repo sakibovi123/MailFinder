@@ -1,1 +1,8 @@
 dist
+build
+false
+tmp
+true
+linkedintest.py
+test.py
+main.py

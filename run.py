@@ -1,22 +1,17 @@
 from src.MailGrabber import MailGrabber
 import time
+from src.const import GMAIL_URL, PASSWORD_URL
 
 with MailGrabber() as mail:
     mail.show_intro()
-    mail.go_to_gmail("https://accounts.google.com/v3/signin/identifier?dsh=S1225616175%3A1678737332875395&authuser=0"
-                     "&continue=https%3A%2F%2Fmail.google.com&ec=GAlAFw&hl=en-GB&service=mail&flowName=GlifWebSignIn"
-                     "&flowEntry=AddSession")
-    #
-    # mail.start_grabbing("//input[@id='identifierId']", input("Enter a starting number => "),
-    #                     int(input("How many time do you want to keep trying? => ")),
-    #                     int(input("Set a length of password => ")))
-    #
-
-    mail.start_grabbing(
-        "//input[@id='identifierId']",
-        "234234234234", 10, 8
+    mail.instructions()
+    mail.go_to_gmail(
+        "https://accounts.google.com/v3/signin/identifier?dsh=S-369070831%3A1679585500716875&continue=https%3A%2F"
+        "%2Faccounts.google.com%2Fb%2F0%2FAddMailService&followup=https%3A%2F%2Faccounts.google.com%2Fb%2F0"
+        "%2FAddMailService&ifkv=AQMjQ7TWf32A8kc6niDClOCjuzw-PYP67_WS1ME8K_e8iWEwdKPidWSCv90mKji3rAcE7pZaIetGpw"
+        "&passive=1209600&flowName=GlifWebSignIn&flowEntry=ServiceLogin "
     )
 
-# schedule.every(1).minutes.do(execute)
-
-
+    mail.start_grabbing("//input[@id='identifierId']", input("\033[32m" + "Enter a starting number => " + "\033[0m"),
+                        int(input("\033[32m" + "How many time do you want to keep trying? => " + "\033[0m")),
+                        int(input("\033[32m" + "Set a length of password => " + "\033[0m")))
